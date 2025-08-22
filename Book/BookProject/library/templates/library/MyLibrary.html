@@ -1,0 +1,204 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة القصص العربية - استكشف فئات القصص</title>
+    <link rel="stylesheet" href="{% static 'css/Storycate.css' %}">
+    <link rel="shortcut icon" href="{% static 'img/Group.svg' %}" type="image/x-icon">
+</head>
+<body>
+    <!-- الخلفيات المتدرجة -->
+    <div class="gradient-bg gradient-1"></div>
+    <div class="gradient-bg gradient-2"></div>
+    <div class="gradient-bg gradient-3"></div>
+    
+    <!-- الهيدر -->
+    <header class="site-header">
+        <nav class="navbar">
+            <!-- قائمة الهامبرجر -->
+            <div class="hamburger" id="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+            
+            <!-- الشعار -->
+            <a href="/" class="logo">
+                <img src="{% static 'img/Group.svg' %}" alt="منصة القصص العربية">
+            </a>
+            
+            <!-- روابط التنقل -->
+            <div class="nav-links" id="navLinks">
+                <a href="{% url 'main_page' %}" class="nav-link" >الرئيسية</a>
+                <a href="{% url 'Storycate' %}" class="nav-link" >قصصي</a>
+                <a href="{% url 'MyLibrary' %}" class="nav-link" >مكتبة</a>
+                <a href="{% url 'my_account' %}" class="nav-link" >الحساب</a>
+            </div>
+                <a href="{% url 'index' %}" class="auth-btn ">تسجيل الدخول</a>
+            
+            <!-- منطقة البحث والمستخدم -->
+            <div class="nav-actions">
+                <div class="search-container">
+                    <button class="search-btn" id="searchBtn">
+                                <img src="{% static 'img/icons8_Search 1.svg' %}"  style="width: 30px;" alt="بحث">
+                    </button>
+                    <input type="text" class="search-input" id="searchInput" placeholder="ابحث عن قصص...">
+                </div>
+                <!-- بهذا -->
+                <label class="ui-switch">
+                    <input type="checkbox" id="themeToggle">
+                    <div class="slider">
+                        <div class="circle"></div>
+                    </div>
+                </label>                
+            </div>
+        </nav>
+    </header>
+{% for book in books %}
+  {% if book.id %}
+    <a href="{% url 'description' book.id %}">
+      <div class="story-card">
+        <img src="{{ book.cover_image.url }}" alt="{{ book.title }}">
+        <h3>{{ book.title }}</h3>
+      </div>
+    </a>
+  {% endif %}
+{% endfor %}
+
+    
+    <!-- القسم الرئيسي -->
+    <main class="main-content">
+        <!-- قسم البطل -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1>استكشف فئات القصص</h1>
+                <p>اختر النوع الذي تحب وابدأ رحلة القراءة أو الاستماع</p>
+                <a href="#categories" class="explore-btn">استعرض جميع القصص</a>
+            </div>
+            
+            <div class="hero-image">
+                <img src="{% static 'img/Frame.png' %}" alt="صورة معبرة عن القصص">
+            </div>
+        </section>
+        
+        <!-- شريط البحث -->
+    <section class="stories-section">
+    <h2 class="section-title"></h2>
+    <div class="stories-scroll-container">
+        {% for book in books %}
+        <a href="{% url 'description' book.id %}">
+            <div class="story-card">
+            <img src="{{ book.cover_image.url }}" alt="{{ book.title }}" class="story-image">
+            <h3 class="story-title">{{ book.title }}</h3>
+            <p class="story-author">{{ book.author }}</p>
+            <div class="story-meta">
+                <span>مدة الإستماع: --:--:--</span>
+                <span>تاريخ النشر: {{ book.created_at|date:"Y-m-d" }}</span>
+            </div>
+            <p class="story-category">{{ book.category.name }}</p>
+            <div class="story-actions">
+                <a href="{% url 'listen' book.id %}" class="action-btn listen-btn">استمع</a>
+                <div class="feature-icon">
+                <img src="{% static 'img/icons8_heart_2 1.svg' %}">
+                </div>
+                <a href="{% url 'listen' book.id %}" class="action-btn read-btn">اقرأ</a>
+            </div>
+            </div>
+        </a>
+        {% empty %}
+        {% endfor %}
+    </div>
+    </section>
+
+                <section class="stories-section">
+    <h2 class="section-title">أحدث القصص المضافة</h2>
+
+<div class="stories-scroll-container">
+    {% for item in user_library_books %}
+    <a href="{% url 'description' item.book.id %}">
+        <div class="story-card">
+            <img src="{{ item.book.cover_image.url }}" alt="{{ item.book.title }}" class="story-image">
+            <h3 class="story-title">{{ item.book.title }}</h3>
+            <p class="story-author">{{ item.book.author }}</p>
+            <div class="story-meta">
+                <span>مدة الإستماع: {{ item.book.audio_duration|default:"غير متوفر" }}</span>
+                <span>عدد الصفحات: {{ item.book.pages|default:"غير متوفر" }}</span>
+            </div>
+            <p class="story-category">{{ item.book.category.name }}</p>
+            <div class="story-actions">
+                <a href="{% url 'listen' item.book.id %}" class="action-btn listen-btn">استمع</a>
+                <div class="feature-icon">
+                    {% if item.is_favorite %}
+                        <img src="{% static 'img/icons8_heart_2 1.svg' %}" alt="مفضل">
+                    {% else %}
+                        <img src="{% static 'img/icons8_heart_outline.svg' %}" alt="ليس مفضل">
+                    {% endif %}
+                </div>
+                <a href="{% url 'listen' item.book.id %}" class="action-btn read-btn">اقرأ</a>
+            </div>
+        </div>
+    </a>
+    {% empty %}
+    <p>لا توجد كتب في مكتبتك حتى الآن.</p>
+    {% endfor %}
+</div>
+
+        </section>
+        <!-- مميزات الفئات -->
+        <section class="features-section">
+            <div class="features-grid">
+                <div class="feature-box">
+                    <p class="feature-text">فئات تم تحديثها مؤخراً</p>
+                    <div class="feature-icon">
+                        <img src="{%static 'img/icons8_World_Map 1.svg'%}">
+                    </div>
+                </div>
+                
+                <div class="feature-box">
+                    <p class="feature-text">فئات فيها كتب صوتية فقط</p>
+                    <div class="feature-icon">
+                        <img src="{%static '/img/icons8_listening_to_music_on_headphones 1.svg'%}">
+                    </div>
+                </div>
+                
+                <div class="feature-box">
+                    <p class="feature-text">الفئات الأكثر شعبية</p>
+                    <div class="feature-icon">
+                        <img src="{%static 'img/icons8_multiple_devices 1.svg'%}">
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- قسم الانضمام -->
+        <section class="join-section">
+            <h2 class="join-title">هل أنت كاتب؟ انشر قصصك الآن وابدأ رحلتك معنا</h2>
+            
+            <div class="email-input">
+                <input type="email" placeholder="البريد الإلكتروني">
+                <button class="email-submit">
+                    <img src="{%static 'img/icons8_Email 1.svg'%}">
+                </button>
+            </div>
+            
+            <a href="/join" class="join-btn">انضم ككاتب</a>
+        </section>
+    </main>
+    
+    <!-- الفوتر -->
+    <footer class="site-footer">
+            <div class="footer-links">
+                <div class="link-group">
+                    <a href="/about">عن المنصة</a>
+                    <a href="/contact">اتصل بنا</a>
+                    <a href="/privacy">سياسة الخصوصية</a>
+                    <a href="/terms">شروط الاستخدام</a>
+                </div>
+    </footer>
+
+    <script src="{% static 'Js/Storycate.js' %}"></script>
+</body>
+</html>

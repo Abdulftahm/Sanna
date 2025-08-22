@@ -1,0 +1,295 @@
+{% load static %}
+{% for book in books %}
+  {% if book.id %}
+  {% endif %}
+{% endfor %}
+
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+        {% if seo %}
+    <title>{{ seo.title }}</title>
+    <meta name="description" content="{{ seo.description }}">
+    <meta name="keywords" content="{{ seo.keywords }}">
+    {% else %}
+    <title>المكتبة الصوتية</title>
+    {% endif %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة القصص العربية</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="shortcut icon" href="{% static 'img/Group.svg' %}" type="image/x-icon">
+</head>
+<body>
+    <div class="gradient-bg gradient-1"></div>
+    <div class="gradient-bg gradient-2"></div>
+    
+<header>
+    <nav>
+        <!-- أيقونة القائمة الجديدة -->
+        <div class="hamburger-menu" id="hamburgerMenu">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+        
+        <!-- بقية العناصر كما هي -->
+        <img src="{% static 'img/Group.svg' %}" alt="شعار الموقع">
+        
+        <!-- نقل الروابط داخل div جديد -->
+        <div class="nav-links-container" id="navLinksContainer">
+            <div class="nav-links">
+                <a href="{% url 'main_page' %}">الرئيسية</a>
+                <a href="{% url 'Storycate' %}">قصصي</a>
+                <a href="{% url 'MyLibrary' %}">مكتبة</a>
+                <a href="{% url 'my_account' %}">الحساب</a>
+            </div>
+                <a href="{% url 'index' %}" class="login-btn">تسجيل الدخول</a>
+            
+            <div class="search-container">  
+                <input type="text" class="search-bar" id="searchBar" placeholder="ابحث هنا...">
+            </div>
+            
+        </div>
+        
+        <!-- بقية العناصر -->
+        <div class="user-icon" id="searchIcon">
+            <img src="{% static 'img/icons8_Search 1.svg' %}" alt="Search">
+        </div>
+        
+        <label class="ui-switch">
+            <input type="checkbox">
+            <div class="slider">
+                <div class="circle"></div>
+            </div>
+        </label>
+    </nav>
+</header>
+    
+<section class="hero-section">
+    <div class="hero-content">
+        <h1>قصص تُروى بصوت …<br>وتُسمع بقلبك</h1>
+        <p>اقرأ أو استمع لآلاف القصص الممتعة<br>من كتّاب مبدعين في مختلف الفئات</p>
+        <a href="#" class="explore-btn">استكشف القصص</a>
+    </div>
+    
+    <div class="hero-image">
+<img src="{% static 'img/Group 2.png' %}" alt="صورة معبرة عن القصص">
+    </div>
+</section>
+    
+<section class="stories-section">
+    <h2 class="section-title">قصص تُروى بصوت … وتُسمع بقلب</h2>
+
+<div class="stories-scroll-container">
+    {% for book in books %}
+    <a href="{% url 'description' book.id %}">
+        <div class="story-card">
+        <img src="{{ book.cover_image.url }}" alt="{{ book.title }}" class="story-image">
+        <h3 class="story-title">{{ book.title }}</h3>
+        <p class="story-author">{{ book.author }}</p>
+        <div class="story-meta">
+        <span>مدة الإستماع: 01:15:00</span>
+        <span>عدد الصفحات: 83</span> <!-- عدّل هذا لاحقًا حسب بيانات الكتاب -->
+        </div>
+        <p class="story-category">{{ book.category.name }}</p>
+        <div class="story-actions">
+            <a href="{% url 'add_favorite' book.id 'listen' %}" class="action-btn listen-btn">استمع</a>
+        <div class="feature-icon">
+            <img src="{% static 'img/icons8_heart_2 1.svg' %}">
+        </div>
+            <a href="{% url 'add_favorite' book.id 'read' %}" class="action-btn read-btn">اقرأ</a>
+        </div>
+    </div>
+    </a>
+{% endfor %}
+</div>
+
+</section>
+    
+    <section class="features-section">
+        <h2 class="features-title">لماذا تختار منصتنا؟</h2>
+        
+        <div class="features-grid">
+            <div class="feature-box">
+                <p class="feature-text">كتّاب من العالم العربي</p>
+                <div class="feature-icon">
+                    <img src="{% static 'img/icons8_World_Map 1.svg' %}">
+                </div>
+            </div>
+            
+            <div class="feature-box">
+                <p class="feature-text">استمع أو اقرأ في أي وقت</p>
+                <div class="feature-icon">
+                    <img src="{% static 'img/icons8_listening_to_music_on_headphones 1.svg' %}">
+                </div>
+            </div>
+            
+            <div class="feature-box">
+                <p class="feature-text">منصة آمنة ومجانية</p>
+                <div class="feature-icon">
+<img src="{% static 'img/icons8_multiple_devices 1.svg' %}">
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="categories-section">
+        <h2 class="categories-title">فئات القصص</h2>
+        
+        <div class="categories-grid">
+            <div class="category-card">
+                <div class="category-icon highlight">
+                    <div class="category-icon-inner">
+<img src="{% static 'img/icons8_fantasy 1.svg' %}">
+                    </div>
+                </div>
+                <p class="category-name">خيال</p>
+            </div>
+            
+            <div class="category-card">
+                <div class="category-icon">
+                    <div class="category-icon-inner">
+<img src="{% static 'img/icons8_roman_soldier_1 1.svg' %}">
+                    </div>
+                </div>
+                <p class="category-name">تاريخي</p>
+            </div>
+            
+            <div class="category-card">
+                <div class="category-icon">
+                    <div class="category-icon-inner">
+<img src="{% static 'img/icons8_theatre_mask 1.svg' %}">
+                    </div>                </div>
+                <p class="category-name">دراما</p>
+            </div>
+            
+            <div class="category-card">
+                <div class="category-icon">
+                    <div class="category-icon-inner">
+                        <img src="{% static 'img/icons8_children 1.svg' %}">
+                    </div>
+                </div>
+                <p class="category-name">أطفال</p>
+            </div>
+        </div>
+    </section>
+    
+    <section class="join-section">
+        <h2 class="join-title">هل أنت كاتب؟ انشر قصصك الآن وابدأ رحلتك معنا</h2>
+        
+        <div class="email-input">
+            <p class="email-text">البريد الإلكتروني</p>
+            <div class="email-icon">
+<img src="{% static 'img/icons8_Email 1.svg' %}">
+            </div>
+        </div>
+        
+        <a href="#" class="join-btn">انضم ككاتب</a>
+    </section>
+    
+    <footer>
+        <div class="footer-links">
+            <a href="#" class="footer-link">تواصل معنا</a>
+            <a href="#" class="footer-link">سياسة الخصوصية</a>
+            <a href="#" class="footer-link">الدعم</a>
+            <a href="#" class="footer-link">عن المنصة</a>
+        </div>
+        <p>© 2023 منصة القصص العربية. جميع الحقوق محفوظة.</p>
+    </footer>
+    <script>
+        function duplicateCardsUntilFull() {
+    const container = document.querySelector('.stories-scroll-container');
+    if (!container) return;
+
+    const originalCards = Array.from(container.children);
+    const containerWidth = container.offsetWidth;
+    let totalWidth = 0;
+
+    // حساب عرض البطاقات مجتمعة
+    originalCards.forEach(card => {
+        totalWidth += card.offsetWidth + 20; // 20 هو gap
+    });
+
+    // عدد التكرارات المطلوبة لتغطية الشاشة مرتين
+    const neededCopies = Math.ceil((window.innerWidth * 2) / totalWidth);
+
+    for (let i = 0; i < neededCopies; i++) {
+        originalCards.forEach(card => {
+            const clone = card.cloneNode(true);
+            container.appendChild(clone);
+        });
+    }
+}
+
+// قائمة الهامبرجر
+document.getElementById('hamburgerMenu').addEventListener('click', function() {
+    this.classList.toggle('active');
+    document.getElementById('navLinksContainer').classList.toggle('active');
+    
+    // تحويل الأشرطة إلى X عند النقر
+    const bars = this.querySelectorAll('.bar');
+    if (this.classList.contains('active')) {
+        bars[0].style.transform = 'translateY(9px) rotate(45deg)';
+        bars[1].style.opacity = '0';
+        bars[2].style.transform = 'translateY(-9px) rotate(-45deg)';
+    } else {
+        bars[0].style.transform = 'none';
+        bars[1].style.opacity = '1';
+        bars[2].style.transform = 'none';
+    }
+});
+
+// إغلاق القائمة عند النقر على رابط
+document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', function() {
+        document.getElementById('hamburgerMenu').classList.remove('active');
+        document.getElementById('navLinksContainer').classList.remove('active');
+        
+        const bars = document.querySelectorAll('.hamburger-menu .bar');
+        bars[0].style.transform = 'none';
+        bars[1].style.opacity = '1';
+        bars[2].style.transform = 'none';
+    });
+});
+
+document.addEventListener('DOMContentLoaded', duplicateCardsUntilFull);
+        // سكريبت تبديل الوضع المظلم/المضيء
+        document.addEventListener('DOMContentLoaded', function() {
+            const modeSwitch = document.querySelector('.ui-switch input[type="checkbox"]');
+            
+            // التحقق من وضع التخزين المحلي
+            if (localStorage.getItem('darkMode') === 'light') {
+                document.body.classList.add('light-mode');
+                modeSwitch.checked = true;
+            }
+            
+            // إضافة مستمع للأحداث عند تغيير وضع المفتاح
+            modeSwitch.addEventListener('change', function() {
+                document.body.classList.toggle('light-mode');
+                
+                // حفظ التفضيل في التخزين المحلي
+                if (document.body.classList.contains('light-mode')) {
+                    localStorage.setItem('darkMode', 'light');
+                } else {
+                    localStorage.setItem('darkMode', 'dark');
+                }
+                
+                // إعادة تحميل الصفحة لتطبيق التغييرات على جميع العناصر
+                setTimeout(() => {
+                    window.location.reload();
+                }, 300);
+            });
+
+            // البحث عند النقر على أيقونة البحث
+            document.getElementById('searchIcon').addEventListener('click', function() {
+                // يمكنك إضافة وظيفة البحث هنا
+                console.log('تم النقر على أيقونة البحث');
+            });
+        });
+
+        // يمكنك إضافة المزيد من السكريبتات حسب الحاجة
+    </script>
+</body>
+</html>

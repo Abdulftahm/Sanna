@@ -1,0 +1,602 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>حسابي - إعدادات</title>
+  <style>
+    :root {
+      font-family: 'Ping AR + LT', 'Courier New', Courier, monospace;
+      --bg-color: #111827;
+      --card-bg: #1F2937;
+      --text-color: rgb(244, 239, 239);
+      --input-bg: #1F2937;
+      --input-border: #374151;
+      --link-color: #a855f7;
+      --gradient-start: #2563EB;
+      --gradient-end: #153885;
+      --header-bg: #111827;
+      --nav-link-color: #d1d5db;
+      --btn-gradient: linear-gradient(90deg, #2563EB 0%, #153885 100%);
+      --footer-text: #F3F4F6;
+    }
+
+    .light-mode {
+      --bg-color: rgb(244, 239, 239);
+      --card-bg: rgb(244, 239, 239);
+      --text-color: #111827;
+      --input-bg: #f9fafb;
+      --input-border: #d1d5db;
+      --link-color: #6d28d9;
+      --gradient-start: #a855f7;
+      --gradient-end: #6d28d9;
+      --header-bg: #e5e7eb;
+      --nav-link-color: #4b5563;
+      --btn-gradient: linear-gradient(90deg, #a855f7 0%, #6d28d9 100%);
+      --footer-text: #4b5563;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      transition: background-color 0.3s ease;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Background Gradients - Responsive */
+    .bg-gradient-1 {
+      width: 200px;
+      height: 250px;
+      position: absolute;
+      left: -50px;
+      top: -50px;
+      transform: rotate(54deg);
+      transform-origin: top left;
+      background: linear-gradient(264deg, #7000FF 0%, #06FFF0 100%);
+      border-radius: 9999px;
+      filter: blur(80px);
+      z-index: -1;
+    }
+
+    .bg-gradient-2 {
+      width: 200px;
+      height: 250px;
+      position: absolute;
+      right: -50px;
+      bottom: 100px;
+      transform: rotate(54deg);
+      transform-origin: top left;
+      background: linear-gradient(264deg, #7000FF 0%, #06FFF0 100%);
+      border-radius: 9999px;
+      filter: blur(80px);
+      z-index: -1;
+    }
+
+    @media (min-width: 768px) {
+      .bg-gradient-1 {
+        width: 300px;
+        height: 350px;
+        left: 100px;
+        top: -50px;
+        filter: blur(100px);
+      }
+      
+      .bg-gradient-2 {
+        width: 300px;
+        height: 350px;
+        right: 100px;
+        bottom: 200px;
+        filter: blur(100px);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .bg-gradient-1 {
+        width: 351.44px;
+        height: 412.47px;
+        left: 233.18px;
+        top: 0px;
+        filter: blur(133.97px);
+      }
+      
+      .bg-gradient-2 {
+        width: 351.44px;
+        height: 412.47px;
+        right: 200px;
+        bottom: 300px;
+        filter: blur(133.97px);
+      }
+    }
+
+    /* Header Styles */
+    header {
+      background-color: var(--header-bg);
+      padding: 1rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.3s ease;
+      width: 100%;
+      position: relative;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .logo {
+      width: 60px;
+      height: auto;
+      margin-left: 0.5rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--nav-link-color);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 1rem;
+      transition: color 0.3s ease;
+      padding: 0.5rem;
+    }
+
+    .nav-links a:hover {
+      color: var(--link-color);
+    }
+
+    /* Burger Menu */
+    .burger-menu {
+      display: none;
+      flex-direction: column;
+      justify-content: space-around;
+      width: 30px;
+      height: 25px;
+      cursor: pointer;
+      z-index: 100;
+    }
+
+    .burger-line {
+      width: 100%;
+      height: 3px;
+      background-color: var(--nav-link-color);
+      transition: all 0.3s ease;
+    }
+
+    /* Mobile Menu */
+    .mobile-menu {
+      visibility: hidden;
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 70%;
+      height: 100vh;
+      background-color: var(--card-bg);
+      padding: 2rem;
+      box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+      z-index: 99;
+      transform: translateX(100%);
+      transition: transform 0.3s ease, visibility 0s 0.3s;
+    }
+    
+    .mobile-menu.active {
+      visibility: visible;
+      transform: translateX(0);
+      transition-delay: 0s;
+    }
+
+    .mobile-menu .nav-links {
+      flex-direction: column;
+      align-items: flex-start;
+      margin-top: 3rem;
+      gap: 2rem;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--nav-link-color);
+    }
+
+    /* Switch Styles */
+    .ui-switch {
+      --switch-bg: rgb(135, 150, 165);
+      --switch-width: 48px;
+      --switch-height: 20px;
+      --circle-diameter: 32px;
+      --circle-bg: rgb(0, 56, 146);
+      --circle-inset: calc((var(--circle-diameter) - var(--switch-height)) / 2);
+      margin-right: 1rem;
+    }
+
+    .ui-switch input {
+      display: none;
+    }
+
+    .slider {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      width: var(--switch-width);
+      height: var(--switch-height);
+      background: var(--switch-bg);
+      border-radius: 999px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .slider .circle {
+      top: calc(var(--circle-inset) * -1);
+      left: 0;
+      width: var(--circle-diameter);
+      height: var(--circle-diameter);
+      position: absolute;
+      background: var(--circle-bg);
+      border-radius: inherit;
+      background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjAiIHdpZHRoPSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIj4KICAgIDxwYXRoIGZpbGw9IiNmZmYiCiAgICAgICAgZD0iTTkuMzA1IDEuNjY3VjMuNzVoMS4zODlWMS42NjdoLTEuMzl6bS00LjcwNyAxLjk1bC0uOTgyLjk4Mkw1LjA5IDYuMDcybC45ODItLjk4Mi0xLjQ3My0xLjQ3M3ptMTAuODAyIDBMMTMuOTI3IDUuMDlsLjk4Mi45ODIgMS40NzMtMS40NzMtLjk4Mi0uOTgyek0xMCA1LjEzOWE0Ljg3MiA0Ljg3MiAwIDAwLTQuODYyIDQuODZBNC44NzIgNC44NzIgMCAwMDEwIDE0Ljg2MiA0Ljg3MiA0Ljg3MiAwIDAwMTQuODYgMTAgNC44NzIgNC44NzIgMCAwMDEwIDUuMTM5em0wIDEuMzg5QTMuNDYyIDMuNDYyIDAgMDExMy40NzEgMTBhMy40NjIgMy40NjIgMCAwMS0zLjQ3MyAzLjQ3MkEzLjQ2MiAzLjQ2MiAwIDAxNi41MjcgMTAgMy40NjIgMy40NjIgMCAwMTEwIDYuNTI4ek0xLjY2NSA5LjMwNXYxLjM5aDIuMDgzdi0xLjM5SDEuNjY2em0xNC41ODMgMHYxLjM5aDIuMDg0di0xLjM5aC0yLjA4NHpNNS4wOSAxMy45MjhMMy42MTYgMTUuNGwuOTgyLjk4MiAxLjQ3My0xLjQ3My0uOTgyLS45ODJ6bTkuODIgMGwtLjk4Mi45ODIgMS40NzMgMS40NzMuOTgyLS45ODItMS40NzMtMS40NzN6TTkuMzA1IDE2LjI1djIuMDgzaDEuMzg5VjE2LjI1aC0xLjM5eiIgLz4KPC9zdmc+");
+      background-repeat: no-repeat;
+      background-position: center center;
+      transition: left 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, transform 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12);
+    }
+
+    .slider .circle::before {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.75);
+      border-radius: inherit;
+      transition: all 500ms;
+      opacity: 0;
+    }
+
+    .ui-switch input:checked + .slider .circle {
+      left: calc(100% - var(--circle-diameter));
+      background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjAiIHdpZHRoPSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIj4KICAgIDxwYXRoIGZpbGw9IiNmZmYiCiAgICAgICAgZD0iTTQuMiAyLjVsLS43IDEuOC0xLjguNyAxLjguNy43IDEuOC42LTEuOEw2LjcgNWwtMS45LS43LS42LTEuOHptMTUgOC4zYTYuNyA2LjcgMCAxMS02LjYtNi42IDUuOCA1LjggMCAwMDYuNiA2LjZ6IiAvPgo8L3N2Zz4=");
+    }
+
+    .ui-switch input:active + .slider .circle::before {
+      transition: 0s;
+      opacity: 1;
+      width: 0;
+      height: 0;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem 1rem;
+      position: relative;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .account-container {
+      width: 100%;
+      max-width: 800px;
+      background-color: var(--card-bg);
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
+    }
+
+    .account-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .account-header h1 {
+      color: var(--text-color);
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .account-field {
+      margin-bottom: 1.5rem;
+    }
+
+    .account-field label {
+      display: block;
+      color: var(--text-color);
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+
+    .account-field .field-value {
+      width: 100%;
+      padding: 1rem;
+      background-color: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 2rem;
+      color: var(--text-color);
+      font-size: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logout-btn {
+      display: block;
+      width: 100%;
+      max-width: 200px;
+      margin: 2rem auto;
+      padding: 1rem;
+      background: var(--btn-gradient);
+      color: white;
+      border: none;
+      border-radius: 2rem;
+      font-size: 1.2rem;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    /* Footer */
+    footer {
+      background-color: var(--header-bg);
+      padding: 2rem 1rem;
+      text-align: center;
+      margin-top: auto;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .footer-links a {
+      color: var(--footer-text);
+      text-decoration: none;
+      font-size: 1rem;
+      transition: color 0.3s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--link-color);
+    }
+
+    /* Responsive Styles */
+    @media (min-width: 768px) {
+      .logo {
+        width: 80px;
+      }
+
+      .nav-links a {
+        font-size: 1.2rem;
+      }
+
+      .account-header h1 {
+        font-size: 2.5rem;
+      }
+
+      .account-field label {
+        font-size: 1.5rem;
+      }
+
+      .footer-links {
+        gap: 3rem;
+      }
+
+      .footer-links a {
+        font-size: 1.2rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+
+      .burger-menu {
+        display: flex;
+      }
+
+      .mobile-menu .nav-links {
+        display: flex;
+      }
+    }
+  </style>
+      <link rel="shortcut icon" href="{% static 'img/Group.svg' %}" type="image/x-icon">
+
+</head>
+<body>
+  <!-- Background Gradients -->
+  <div class="bg-gradient-1"></div>
+  <div class="bg-gradient-2"></div>
+
+  <!-- Header -->
+  <header>
+    <nav>
+      <div class="logo-container">
+        <img src="{% static 'img/Group.svg' %}" alt="منصة القصص العربية">
+      </div>
+      
+      <div class="burger-menu" id="burgerMenu">
+        <div class="burger-line"></div>
+        <div class="burger-line"></div>
+        <div class="burger-line"></div>
+      </div>
+      
+      <div class="nav-links">
+            <a href="{% url 'main_page' %}">الرئيسية</a>
+            <a href="{% url 'Storycate' %}">قصصي</a>
+            <a href="{% url 'MyLibrary' %}">مكتبة</a>
+            <a href="{% url 'my_account' %}">الحساب</a>
+        <label class="ui-switch">
+          <input type="checkbox" id="themeSwitch">
+          <div class="slider">
+            <div class="circle"></div>
+          </div>
+        </label>
+      </div>
+    </nav>
+    
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+      <div class="close-btn" id="closeMenu">×</div>
+      <div class="nav-links">
+        <a href="/html/mainPage.html">الرئيسية</a>
+        <a href="#">فئات القصص</a>
+        <a href="#">مكتبتي</a>
+        <a href="#">حسابي</a>
+        <div style="display: flex; align-items: center; margin-top: 1rem;">
+          <span style="margin-left: 1rem; color: var(--nav-link-color);">وضع الليل</span>
+          <label class="ui-switch">
+            <input type="checkbox" id="mobileThemeSwitch">
+            <div class="slider">
+              <div class="circle"></div>
+            </div>
+          </label>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="account-container">
+      <div class="account-header">
+        <h1>حسابي</h1>
+      </div>
+      
+      <div class="account-field">
+        <label>البريد الالكتروني</label>
+        <input type="email" name=""class="field-value" placeholder="Example@Example.com">
+      </div>
+      
+      <div class="account-field">
+        <label>كلمة المرور</label>
+        <input type="password" name=""class="field-value" placeholder="************">
+      </div>
+      
+      <div class="account-field">
+        <label>مظهر التطبيق</label>
+        <div class="field-value">
+          <span>Dark Mode</span>
+          <div style="width: 20px; height: 20px; position: relative; overflow: hidden">
+            <div style="width: 11.67px; height: 5.98px; left: 4.17px; top: 6.59px; position: absolute; background: var(--link-color);"></div>
+          </div>
+        </div>
+      </div>
+      
+      <a href="{% url 'logout' %}" class="logout-btn">تسجيل خروج</a>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="#">عن المنصة</a>
+      <a href="#">الدعم</a>
+      <a href="#">سياسة الخصوصية</a>
+      <a href="#">تواصل معنا</a>
+    </div>
+    <div style="color: var(--footer-text); margin-top: 1rem;">
+      © 2023 جميع الحقوق محفوظة
+    </div>
+  </footer>
+
+  <script>
+    // Dark/Light Mode Toggle
+    document.addEventListener('DOMContentLoaded', function() {
+      const themeSwitch = document.getElementById('themeSwitch');
+      const mobileThemeSwitch = document.getElementById('mobileThemeSwitch');
+      
+      // Check for saved theme preference
+      if (localStorage.getItem('darkMode') === 'false') {
+        document.body.classList.add('light-mode');
+        themeSwitch.checked = true;
+        mobileThemeSwitch.checked = true;
+      }
+      
+      // Desktop theme switch
+      themeSwitch.addEventListener('change', function() {
+        document.body.classList.toggle('light-mode');
+        localStorage.setItem('darkMode', !this.checked);
+      });
+      
+      // Mobile theme switch
+      mobileThemeSwitch.addEventListener('change', function() {
+        document.body.classList.toggle('light-mode');
+        themeSwitch.checked = this.checked;
+        localStorage.setItem('darkMode', !this.checked);
+      });
+      
+      // Sync switches
+      themeSwitch.addEventListener('change', function() {
+        mobileThemeSwitch.checked = this.checked;
+      });
+      
+      mobileThemeSwitch.addEventListener('change', function() {
+        themeSwitch.checked = this.checked;
+      });
+      
+      // Mobile Menu Toggle
+      const burgerMenu = document.getElementById('burgerMenu');
+      const mobileMenu = document.getElementById('mobileMenu');
+      const closeMenu = document.getElementById('closeMenu');
+      
+      burgerMenu.addEventListener('click', function() {
+        mobileMenu.classList.add('active');
+      });
+      
+      closeMenu.addEventListener('click', function() {
+        mobileMenu.classList.remove('active');
+      });
+      
+      // Close menu when clicking on a link
+      const mobileLinks = mobileMenu.querySelectorAll('a');
+      mobileLinks.forEach(link => {
+        link.addEventListener('click', function() {
+          mobileMenu.classList.remove('active');
+        });
+      });
+      
+      // Prevent zooming on mobile
+      document.addEventListener('gesturestart', function(e) {
+        e.preventDefault();
+      });
+    });
+  </script>
+</body>
+</html>
