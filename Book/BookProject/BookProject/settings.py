@@ -15,7 +15,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'library',  # تأكد أنها مذكورة مرة واحدة فقط
+    'BookProject.library',  # تأكد أنها مذكورة مرة واحدة فقط
 ]
 
 MIDDLEWARE = [
