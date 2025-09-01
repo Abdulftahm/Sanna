@@ -15,7 +15,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'BookProject.library',  # تأكد أنها مذكورة مرة واحدة فقط
+    'library',  # تأكد أنها مذكورة مرة واحدة فقط
 ]
 
 MIDDLEWARE = [
@@ -85,4 +85,5 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 
