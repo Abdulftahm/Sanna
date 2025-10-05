@@ -7,4 +7,5 @@ DEBUG = False
 ALLOWED_HOSTS = os.environ['ALLOWED_HOSTS'].split(',')
 CSRF_TRUSTED_ORIGINS=[f"https://{x}" for x in ALLOWED_HOSTS]
 
-print(CSRF_TRUSTED_ORIGINS)
+STATIC_ROOT="/mnt/docker-vol/static"
+STATICFILES_STORAGE="whitenoise.storage.CompressedStaticFilesStorage"
