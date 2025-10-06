@@ -5,6 +5,6 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('book-admin/', admin.site.urls),
-    path('', include('BookProject.library.urls')),  # تأكد أن هذا يشير إلى تطبيق library
+    path('', include('library.urls')),  # تأكد أن هذا يشير إلى تطبيق library
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

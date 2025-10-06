@@ -1,5 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
+
+
+class CustomUser(AbstractUser):
+    pass
+
 
 class Category(models.Model):
     name = models.CharField("اسم الفئة", max_length=100)
@@ -30,7 +36,7 @@ class Book(models.Model):
         return self.title
 
 class UserLibrary(models.Model):
-    user = models.ForeignKey(User, verbose_name="المستخدم", on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, verbose_name="المستخدم", on_delete=models.CASCADE)
     book = models.ForeignKey(Book, verbose_name="الكتاب", on_delete=models.CASCADE)
     added_at = models.DateTimeField("تاريخ الإضافة", auto_now_add=True)
     is_favorite = models.BooleanField("مفضل؟", default=False)

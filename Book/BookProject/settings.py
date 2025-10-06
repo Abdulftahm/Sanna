@@ -16,7 +16,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'whitenoise.runserver_nostatic',
-    'BookProject.library.apps.LibraryConfig',  # تأكد أنها مذكورة مرة واحدة فقط
+    #'BookProject.library.apps.LibraryConfig',  # تأكد أنها مذكورة مرة واحدة فقط
+    'library',  # تأكد أنها مذكورة مرة واحدة فقط
 ]
 
 MIDDLEWARE = [
@@ -71,6 +72,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+### use custom AUTH USER MODEL in case we want to edit later
+AUTH_USER_MODEL='library.CustomUser'
+
+#LANGUAGE_CODE = 'en-us'
 LANGUAGE_CODE = 'ar-sa'
 TIME_ZONE = 'Asia/Riyadh'
 USE_I18N = True
@@ -81,7 +86,7 @@ USE_TZ = True
 # ---------------------------
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # حل مشكلة collectstatic
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'BookProject/library/static')]  # لو عندك static مخصصة
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'library/static')]  # لو عندك static مخصصة
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
