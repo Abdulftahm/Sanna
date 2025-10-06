@@ -42,6 +42,7 @@ class UserLibrary(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.book.title}"
+
 class SEOSettings(models.Model):
     page_name = models.CharField("اسم الصفحة", max_length=100, unique=True)
     title = models.CharField("عنوان الصفحة (Meta Title)", max_length=255)

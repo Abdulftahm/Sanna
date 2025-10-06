@@ -3,8 +3,6 @@ FROM python:3.12.2
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-RUN apt-get update && apt-get install vim less -y
-
 COPY ./Book/requirements.txt /app/requirements.txt
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
