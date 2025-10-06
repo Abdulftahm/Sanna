@@ -29,9 +29,10 @@ LOGGING = {
             "class": "logging.FileHandler",
             "filename": "/var/log/django.log"
         },
+
     },
     "root": {
         "handlers": ["console", "file"],
         "level": "DEBUG",
-    },
+   },
 }
