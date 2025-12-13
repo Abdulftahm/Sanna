@@ -183,7 +183,7 @@ nav {
 .stories-scroll-container {
     display: flex;
     gap: 15px;
-    animation: scroll-rtl 4s linear infinite;
+    animation: scroll-rtl 45s linear infinite;
     padding: 10px 0;
     width: max-content;
 }

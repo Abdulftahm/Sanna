@@ -1,0 +1,329 @@
+/* Auth Pages (Login/Register) Styles */
+:root {
+    font-family: 'Ping AR + LT', 'Courier New', Courier, monospace;
+    --bg-color: #111827;
+    --card-bg: #1F2937;
+    --text-color: rgb(244, 239, 239);
+    --input-bg: #1F2937;
+    --input-border: #374151;
+    --link-color: #a855f7;
+    --gradient-start: #2563EB;
+    --gradient-end: #153885;
+    --header-bg: #111827;
+    --nav-link-color: #d1d5db;
+    --btn-gradient: linear-gradient(90deg, #2563EB 0%, #153885 100%);
+}
+
+.light-mode {
+    --bg-color: rgb(244, 239, 239);
+    --card-bg: rgb(244, 239, 239);
+    --text-color: #111827;
+    --input-bg: #f9fafb;
+    --input-border: #d1d5db;
+    --link-color: #6d28d9;
+    --gradient-start: #a855f7;
+    --gradient-end: #6d28d9;
+    --header-bg: #e5e7eb;
+    --nav-link-color: #4b5563;
+    --btn-gradient: linear-gradient(90deg, #a855f7 0%, #6d28d9 100%);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    transition: background-color 0.3s ease;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Background Gradients */
+.bg-gradient-1 {
+    width: 200px;
+    height: 250px;
+    position: absolute;
+    left: -50px;
+    top: -50px;
+    transform: rotate(54deg);
+    transform-origin: top left;
+    background: linear-gradient(264deg, #7000FF 0%, #06FFF0 100%);
+    border-radius: 9999px;
+    filter: blur(80px);
+    z-index: -1;
+}
+
+.bg-gradient-2 {
+    width: 200px;
+    height: 250px;
+    position: absolute;
+    right: -50px;
+    bottom: 100px;
+    transform: rotate(54deg);
+    transform-origin: top left;
+    background: linear-gradient(264deg, #7000FF 0%, #06FFF0 100%);
+    border-radius: 9999px;
+    filter: blur(80px);
+    z-index: -1;
+}
+
+@media (min-width: 768px) {
+    .bg-gradient-1 {
+        width: 300px;
+        height: 350px;
+        left: 100px;
+        top: -50px;
+        filter: blur(100px);
+    }
+
+    .bg-gradient-2 {
+        width: 300px;
+        height: 350px;
+        right: 100px;
+        bottom: 200px;
+        filter: blur(100px);
+    }
+}
+
+@media (min-width: 1024px) {
+    .bg-gradient-1 {
+        width: 351.44px;
+        height: 412.47px;
+        left: 233.18px;
+        top: 0px;
+        filter: blur(133.97px);
+    }
+
+    .bg-gradient-2 {
+        width: 351.44px;
+        height: 412.47px;
+        right: 200px;
+        bottom: 300px;
+        filter: blur(133.97px);
+    }
+}
+
+/* Main Content */
+.auth-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 1rem;
+    position: relative;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 450px;
+    padding: 2rem;
+    background: var(--card-bg);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-header .logo {
+    width: 80px;
+    height: auto;
+    margin-bottom: 1rem;
+}
+
+.auth-header h1 {
+    font-size: 1.8rem;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+}
+
+.auth-header p {
+    color: var(--nav-link-color);
+    font-size: 1rem;
+}
+
+/* Form Styles */
+.auth-form {
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    color: var(--text-color);
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 1rem;
+    background-color: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 50px;
+    color: var(--text-color);
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--gradient-start);
+}
+
+.form-group input::placeholder {
+    color: var(--nav-link-color);
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 1rem;
+    background: var(--btn-gradient);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.submit-btn:hover {
+    opacity: 0.9;
+}
+
+/* Tab Switching */
+.auth-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.auth-tab {
+    background: none;
+    border: none;
+    color: var(--nav-link-color);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.auth-tab.active {
+    color: var(--text-color);
+    border-bottom-color: var(--gradient-start);
+}
+
+.auth-form-container {
+    display: none;
+}
+
+.auth-form-container.active {
+    display: block;
+}
+
+/* Social Login */
+.social-divider {
+    display: flex;
+    align-items: center;
+    margin: 1.5rem 0;
+}
+
+.social-divider::before,
+.social-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: var(--input-border);
+}
+
+.social-divider span {
+    padding: 0 1rem;
+    color: var(--nav-link-color);
+    font-size: 0.9rem;
+}
+
+.social-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.social-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.social-btn:hover {
+    border-color: var(--gradient-start);
+}
+
+.social-btn img {
+    width: 24px;
+    height: 24px;
+}
+
+/* Messages */
+.messages {
+    margin-bottom: 1rem;
+}
+
+.message {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.message.error {
+    background-color: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.message.success {
+    background-color: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+/* Back Link */
+.back-link {
+    text-align: center;
+    margin-top: 1.5rem;
+}
+
+.back-link a {
+    color: var(--link-color);
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+.back-link a:hover {
+    text-decoration: underline;
+}

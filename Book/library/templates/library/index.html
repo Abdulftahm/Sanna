@@ -1,599 +1,102 @@
+{% extends 'library/base_auth.html' %}
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>تسجيل الدخول / إنشاء حساب</title>
-  <style>
-    :root {
-      font-family: 'Ping AR + LT', 'Courier New', Courier, monospace;
-      --bg-color: #111827;
-      --card-bg: #1F2937;
-      --text-color: rgb(244, 239, 239);
-      --input-bg: #1F2937;
-      --input-border: #374151;
-      --link-color: #a855f7;
-      --gradient-start: #2563EB;
-      --gradient-end: #153885;
-      --header-bg: #111827;
-      --nav-link-color: #d1d5db;
-      --btn-gradient: linear-gradient(90deg, #2563EB 0%, #153885 100%);
-    }
+{% block title %}تسجيل الدخول / إنشاء حساب{% endblock %}
 
-    .light-mode {
-      --bg-color: rgb(244, 239, 239);
-      --card-bg: rgb(244, 239, 239);
-      --text-color: #111827;
-      --input-bg: #f9fafb;
-      --input-border: #d1d5db;
-      --link-color: #6d28d9;
-      --gradient-start: #a855f7;
-      --gradient-end: #6d28d9;
-      --header-bg: #e5e7eb;
-      --nav-link-color: #4b5563;
-      --btn-gradient: linear-gradient(90deg, #a855f7 0%, #6d28d9 100%);
-    }
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <img src="{% static 'img/Group.svg' %}" alt="شعار الموقع" class="logo">
+            <h1>مرحباً بك</h1>
+            <p>سجل دخولك أو أنشئ حساباً جديداً</p>
+        </div>
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+        <!-- Messages -->
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
 
-    body {
-      background-color: var(--bg-color);
-      padding: 0;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      transition: background-color 0.3s ease;
-      position: relative;
-      overflow-x: hidden;
-    }
+        <!-- Tabs -->
+        <div class="auth-tabs">
+            <button class="auth-tab active" data-form="login-form">تسجيل الدخول</button>
+            <button class="auth-tab" data-form="register-form">إنشاء حساب</button>
+        </div>
 
-    /* Background Gradients - Responsive */
-    .bg-gradient-1 {
-      width: 200px;
-      height: 250px;
-      position: absolute;
-      left: -50px;
-      top: -50px;
-      transform: rotate(54deg);
-      transform-origin: top left;
-      background: linear-gradient(264deg, #7000FF 0%, #06FFF0 100%);
-      border-radius: 9999px;
-      filter: blur(80px);
-      z-index: -1;
-    }
-
-    .bg-gradient-2 {
-      width: 200px;
-      height: 250px;
-      position: absolute;
-      right: -50px;
-      bottom: 100px;
-      transform: rotate(54deg);
-      transform-origin: top left;
-      background: linear-gradient(264deg, #7000FF 0%, #06FFF0 100%);
-      border-radius: 9999px;
-      filter: blur(80px);
-      z-index: -1;
-    }
-
-    @media (min-width: 768px) {
-      .bg-gradient-1 {
-        width: 300px;
-        height: 350px;
-        left: 100px;
-        top: -50px;
-        filter: blur(100px);
-      }
-      
-      .bg-gradient-2 {
-        width: 300px;
-        height: 350px;
-        right: 100px;
-        bottom: 200px;
-        filter: blur(100px);
-      }
-    }
-
-    @media (min-width: 1024px) {
-      .bg-gradient-1 {
-        width: 351.44px;
-        height: 412.47px;
-        left: 233.18px;
-        top: 0px;
-        filter: blur(133.97px);
-      }
-      
-      .bg-gradient-2 {
-        width: 351.44px;
-        height: 412.47px;
-        right: 200px;
-        bottom: 300px;
-        filter: blur(133.97px);
-      }
-    }
-
-    header {
-      background-color: transparent;
-      padding: 1rem;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      transition: background-color 0.3s ease;
-      width: 100%;
-    }
-
-    nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .nav-links {
-      display: contents;
-      gap: 1rem;
-      align-items: center;
-    }
-
-    .nav-links a {
-      color: var(--nav-link-color);
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 1rem;
-      transition: color 0.3s ease;
-      padding: 0.5rem;
-    }
-        /* From Uiverse.io by Galahhad */ 
-    /* switch settings 👇 */
-
-    .ui-switch {
-      /* switch */
-      --switch-bg: rgb(135, 150, 165);
-      --switch-width: 48px;
-      --switch-height: 20px;
-      /* circle */
-      --circle-diameter: 32px;
-      --circle-bg: rgb(0, 56, 146);
-      --circle-inset: calc((var(--circle-diameter) - var(--switch-height)) / 2);
-    }
-
-    .ui-switch input {
-      display: none;
-    }
-
-    .slider {
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
-      width: var(--switch-width);
-      height: var(--switch-height);
-      background: var(--switch-bg);
-      border-radius: 999px;
-      position: relative;
-      cursor: pointer;
-    }
-
-    .slider .circle {
-      top: calc(var(--circle-inset) * -1);
-      left: 0;
-      width: var(--circle-diameter);
-      height: var(--circle-diameter);
-      position: absolute;
-      background: var(--circle-bg);
-      border-radius: inherit;
-      background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjAiIHdpZHRoPSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIj4KICAgIDxwYXRoIGZpbGw9IiNmZmYiCiAgICAgICAgZD0iTTkuMzA1IDEuNjY3VjMuNzVoMS4zODlWMS42NjdoLTEuMzl6bS00LjcwNyAxLjk1bC0uOTgyLjk4Mkw1LjA5IDYuMDcybC45ODItLjk4Mi0xLjQ3My0xLjQ3M3ptMTAuODAyIDBMMTMuOTI3IDUuMDlsLjk4Mi45ODIgMS40NzMtMS40NzMtLjk4Mi0uOTgyek0xMCA1LjEzOWE0Ljg3MiA0Ljg3MiAwIDAwLTQuODYyIDQuODZBNC44NzIgNC44NzIgMCAwMDEwIDE0Ljg2MiA0Ljg3MiA0Ljg3MiAwIDAwMTQuODYgMTAgNC44NzIgNC44NzIgMCAwMDEwIDUuMTM5em0wIDEuMzg5QTMuNDYyIDMuNDYyIDAgMDExMy40NzEgMTBhMy40NjIgMy40NjIgMCAwMS0zLjQ3MyAzLjQ3MkEzLjQ2MiAzLjQ2MiAwIDAxNi41MjcgMTAgMy40NjIgMy40NjIgMCAwMTEwIDYuNTI4ek0xLjY2NSA5LjMwNXYxLjM5aDIuMDgzdi0xLjM5SDEuNjY2em0xNC41ODMgMHYxLjM5aDIuMDg0di0xLjM5aC0yLjA4NHpNNS4wOSAxMy45MjhMMy42MTYgMTUuNGwuOTgyLjk4MiAxLjQ3My0xLjQ3My0uOTgyLS45ODJ6bTkuODIgMGwtLjk4Mi45ODIgMS40NzMgMS40NzMuOTgyLS45ODItMS40NzMtMS40NzN6TTkuMzA1IDE2LjI1djIuMDgzaDEuMzg5VjE2LjI1aC0xLjM5eiIgLz4KPC9zdmc+");
-      background-repeat: no-repeat;
-      background-position: center center;
-      -webkit-transition: left 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, -webkit-transform 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-      -o-transition: left 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, transform 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-      transition: left 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, transform 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, -webkit-transform 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      -webkit-box-align: center;
-      -ms-flex-align: center;
-      align-items: center;
-      -webkit-box-pack: center;
-      -ms-flex-pack: center;
-      justify-content: center;
-      box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12);
-      ;
-    }
-
-    .slider .circle::before {
-      content: "";
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background: rgba(255, 255, 255, 0.75);
-      border-radius: inherit;
-      -webkit-transition: all 500ms;
-      -o-transition: all 500ms;
-      transition: all 500ms;
-      opacity: 0;
-    }
-
-    /* actions */
-
-    .ui-switch input:checked+.slider .circle {
-      left: calc(100% - var(--circle-diameter));
-      background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjAiIHdpZHRoPSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIj4KICAgIDxwYXRoIGZpbGw9IiNmZmYiCiAgICAgICAgZD0iTTQuMiAyLjVsLS43IDEuOC0xLjguNyAxLjguNy43IDEuOC42LTEuOEw2LjcgNWwtMS45LS43LS42LTEuOHptMTUgOC4zYTYuNyA2LjcgMCAxMS02LjYtNi42IDUuOCA1LjggMCAwMDYuNiA2LjZ6IiAvPgo8L3N2Zz4=");
-    }
-
-    .ui-switch input:active+.slider .circle::before {
-      -webkit-transition: 0s;
-      -o-transition: 0s;
-      transition: 0s;
-      opacity: 1;
-      width: 0;
-      height: 0;
-    }
-    .logo {
-      width: 60px;
-      height: auto;
-      margin-left: 0.5rem;
-    }
-
-    @media (min-width: 768px) {
-      header {
-        padding: 0rem 2rem;
-      }
-      
-      .nav-links a {
-        font-size: 1.7rem;
-      }
-      
-      .logo {
-        width: 80px;
-      }
-    }
-
-    .main-content {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 1rem;
-      position: relative;
-      width: 100%;
-    }
-
-    .container {
-      max-width: 100%;
-      width: 100%;
-      position: relative;
-      overflow: hidden;
-      z-index: 10;
-      background-color: var(--card-bg);
-      padding: 1.5rem;
-      border-radius: 0.5rem;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      min-height: auto;
-      transition: background-color 0.3s ease;
-      margin: 1rem;
-    }
-
-    @media (min-width: 480px) {
-      .container {
-        max-width: 400px;
-        padding: 2rem;
-        min-height: 30rem;
-      }
-    }
-
-    @media (min-width: 768px) {
-      .container {
-        max-width: 450px;
-      }
-    }
-
-    h2 {
-      color: var(--text-color);
-      font-size: 1.5rem;
-      font-weight: bold;
-      margin-bottom: 1.5rem;
-      text-align: center;
-    }
-
-    @media (min-width: 768px) {
-      h2 {
-        font-size: 1.8rem;
-      }
-    }
-
-    .form-group {
-      margin-bottom: 1rem;
-    }
-
-    label {
-      display: block;
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: #9ca3af;
-      margin-bottom: 0.5rem;
-    }
-
-    input[type="text"],
-    input[type="email"],
-    input[type="password"] {
-      width: 100%;
-      padding: 0.8rem;
-      background-color: var(--input-bg);
-      border: 1px solid var(--input-border);
-      border-radius: 0.5rem;
-      color: var(--text-color);
-      font-size: 1rem;
-    }
-
-    .submit-btn {
-      background: var(--btn-gradient);
-      color: white;
-      padding: 0.8rem;
-      font-weight: bold;
-      border: none;
-      border-radius: 0.5rem;
-      cursor: pointer;
-      width: 100%;
-      transition: opacity 0.2s ease;
-      margin-top: 1rem;
-      font-size: 1rem;
-      outline: 1px solid #2563EB;
-      outline-offset: -1px;
-    }
-
-    @media (min-width: 768px) {
-      .submit-btn {
-        font-size: 1.2rem;
-      }
-    }
-
-    .submit-btn:hover {
-      opacity: 0.9;
-    }
-
-    .toggle-link {
-      display: block;
-      text-align: center;
-      color: var(--link-color);
-      margin-top: 1.5rem;
-      cursor: pointer;
-      font-size: 0.9rem;
-    }
-
-    .social-icons {
-      display: flex;
-      justify-content: center;
-      gap: 1.5rem;
-      margin-top: 1.5rem;
-    }
-
-    .social-icon {
-      width: 3rem;
-      height: 3rem;
-      background: var(--input-bg);
-      border-radius: 50%;
-      border: 1px solid var(--input-border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-    }
-
-    .social-icon:hover {
-      transform: scale(1.1);
-    }
-
-    .social-icon img {
-      width: 24px;
-      height: 24px;
-    }
-
-    /* --- تأثير الانتقال بين الشاشات --- */
-    .form-wrapper {
-      position: absolute;
-      width: 100%;
-      opacity: 1;
-      transform: translateX(0);
-      transition: transform 0.5s ease, opacity 0.5s ease;
-      backface-visibility: hidden;
-      padding: 0 1rem;
-    }
-
-    .form-hidden-left {
-      transform: translateX(-100%);
-      opacity: 0;
-    }
-
-    .form-hidden-right {
-      transform: translateX(100%);
-      opacity: 0;
-    }
-  </style>
-      <link rel="shortcut icon" href="{% static 'img/Group.svg' %}" type="image/x-icon">
-
-</head>
-<body>
-  <!-- Background Gradients -->
-  <div class="bg-gradient-1"></div>
-  <div class="bg-gradient-2"></div>
-
-  <!-- Header -->
-  <header>
-    <nav>
-      <div class="nav-links">
-        <img class="logo" src="{% static 'img/Group.svg' %}" alt="شعار الموقع">
-            <a href="{% url 'main_page' %}">الرئيسية</a>
-            <a href="{% url 'Storycate' %}">قصصي</a>
-            <a href="{% url 'MyLibrary' %}">مكتبة</a>
-            <a href="{% url 'my_account' %}">الحساب</a>
-      </div>
-      <div class="user-icon" id="searchIcon">
-        <img src="{% static 'img/icons8_Search 1.svg' %}" alt="Search">
-      </div>
-        <label class="ui-switch">
-          <input type="checkbox">
-          <div class="slider">
-            <div class="circle"></div>
-          </div>
-        </label>
-    </nav>
-  </header>
-
-  <!-- Main Content -->
-  <div class="main-content">
-    <div class="container">
-      <div id="formWrapper" style="position: relative; height: 100%;">
-        
         <!-- Login Form -->
-              <div id="loginForm" class="form-wrapper">
-          <h2>تسجيل الدخول</h2>
-              {% if error %}
-                <p style="color:red;">{{ error }}</p>
-              {% endif %}
-          <form method="post" action="{% url 'login' %}">
+        <div id="login-form" class="auth-form-container active">
+            <form class="auth-form" method="POST" action="{% url 'login' %}">
                 {% csrf_token %}
-            <div class="form-group">
-              <label for="login-email">البريد الإلكتروني</label>
-              <input type="email" id="login-email" name="email" required />
+                <div class="form-group">
+                    <label for="login-email">البريد الإلكتروني</label>
+                    <input type="email" id="login-email" name="email" placeholder="أدخل بريدك الإلكتروني" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="login-password">كلمة المرور</label>
+                    <input type="password" id="login-password" name="password" placeholder="أدخل كلمة المرور" required>
+                </div>
+
+                <button type="submit" class="submit-btn">تسجيل الدخول</button>
+            </form>
+
+            <div class="social-divider">
+                <span>أو</span>
             </div>
-            <div class="form-group">
-              <label for="login-password">كلمة المرور</label>
-              <input type="password" id="login-password" name="password" required />
+
+            <div class="social-buttons">
+                <button class="social-btn" title="تسجيل بحساب جوجل">
+                    <img src="{% static 'img/icons8_google 1.svg' %}" alt="Google">
+                </button>
+                <button class="social-btn" title="تسجيل بحساب فيسبوك">
+                    <img src="{% static 'img/icons8_facebook 1.svg' %}" alt="Facebook">
+                </button>
             </div>
-            <button type="submit" class="submit-btn">تسجيل الدخول</button>
-            <div class="social-icons">
-              <div class="social-icon">
-                <img src="{% static 'img/icons8_facebook 1.svg' %}" alt="فيسبوك">
-              </div>
-              <div class="social-icon">
-                <img src="{% static 'img/icons8_google 1.svg' %}" alt="جوجل">
-              </div>
-            </div>
-            
-            <p class="toggle-link" onclick="switchToRegister()">ليس لديك حساب؟ إنشاء حساب</p>
-          </form>
         </div>
 
         <!-- Register Form -->
-        <div id="registerForm" class="form-wrapper" style="display: none;">
-          <h2>إنشاء حساب</h2>
-          <form method="post" action="{% url 'register' %}">
+        <div id="register-form" class="auth-form-container">
+            <form class="auth-form" method="POST" action="{% url 'register' %}">
                 {% csrf_token %}
-            <div class="form-group">
-              <label for="register-name">الاسم الكامل</label>
-              <input type="text" id="register-name" name="name" required />
+                <div class="form-group">
+                    <label for="register-name">الاسم</label>
+                    <input type="text" id="register-name" name="name" placeholder="أدخل اسمك" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="register-email">البريد الإلكتروني</label>
+                    <input type="email" id="register-email" name="email" placeholder="أدخل بريدك الإلكتروني" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="register-password">كلمة المرور</label>
+                    <input type="password" id="register-password" name="password" placeholder="أدخل كلمة المرور" required>
+                </div>
+
+                <button type="submit" class="submit-btn">إنشاء حساب</button>
+            </form>
+
+            <div class="social-divider">
+                <span>أو</span>
             </div>
-            <div class="form-group">
-              <label for="register-email">البريد الإلكتروني</label>
-              <input type="email" id="register-email" name="email" required />
+
+            <div class="social-buttons">
+                <button class="social-btn" title="تسجيل بحساب جوجل">
+                    <img src="{% static 'img/icons8_google 1.svg' %}" alt="Google">
+                </button>
+                <button class="social-btn" title="تسجيل بحساب فيسبوك">
+                    <img src="{% static 'img/icons8_facebook 1.svg' %}" alt="Facebook">
+                </button>
             </div>
-            <div class="form-group">
-              <label for="register-password">كلمة المرور</label>
-              <input type="password" id="register-password" name="password" required />
-            </div>
-            <button type="submit" class="submit-btn">إنشاء الحساب</button>
-                        
-            <div class="social-icons">
-              <div class="social-icon">
-                <img src="{% static 'img/icons8_facebook 1.svg' %}" alt="فيسبوك">
-              </div>
-              <div class="social-icon">
-                <img src="{% static 'img/icons8_google 1.svg' %}" alt="جوجل">
-              </div>
-            </div>
-            
-            <p class="toggle-link" onclick="switchToLogin()">لديك حساب بالفعل؟ تسجيل الدخول</p>
-          </form>
         </div>
-      </div>
+
+        <div class="back-link">
+            <a href="{% url 'main_page' %}">العودة للصفحة الرئيسية</a>
+        </div>
     </div>
-  </div>
-
-  <script>
-    function switchToRegister() {
-      const login = document.getElementById('loginForm');
-      const register = document.getElementById('registerForm');
-
-      login.classList.add('form-hidden-left');
-
-      setTimeout(() => {
-        login.style.display = 'none';
-        register.style.display = 'block';
-        register.classList.remove('form-hidden-right');
-      }, 500);
-    }
-
-    function switchToLogin() {
-      const login = document.getElementById('loginForm');
-      const register = document.getElementById('registerForm');
-
-      register.classList.add('form-hidden-right');
-
-      setTimeout(() => {
-        register.style.display = 'none';
-        login.style.display = 'block';
-        login.classList.remove('form-hidden-left');
-      }, 500);
-    }
-    // أضف هذا الكود داخل وسم <script> الموجود في نهاية الصفحة
-document.addEventListener('DOMContentLoaded', function() {
-  // الحصول على عنصر المفتاح
-  const modeSwitch = document.querySelector('.ui-switch input[type="checkbox"]');
-  
-  // التحقق من وضع التخزين المحلي
-  if (localStorage.getItem('darkMode')) {
-    document.body.classList.add('light-mode');
-    modeSwitch.checked = true;
-  }
-  
-  // إضافة مستمع للأحداث عند تغيير وضع المفتاح
-  modeSwitch.addEventListener('change', function() {
-    document.body.classList.toggle('light-mode');
-    // حفظ التفضيل في التخزين المحلي
-    if (document.body.classList.contains('light-mode')) {
-      localStorage.setItem('darkMode', 'true');
-    } else {
-      localStorage.removeItem('darkMode');
-    }
-  });
-});
-
-    // تحسين تجربة المستخدم على الأجهزة المحمولة
-    document.addEventListener('DOMContentLoaded', function() {
-      // منع تكبير الصفحة على الهواتف
-      document.addEventListener('gesturestart', function(e) {
-        e.preventDefault();
-      });
-      
-      // ضبط ارتفاع النموذج تلقائياً
-      const formWrapper = document.getElementById('formWrapper');
-      const adjustFormHeight = () => {
-        const currentForm = document.querySelector('.form-wrapper[style*="display: block"]') || 
-                            document.querySelector('.form-wrapper:not([style*="display: none"])');
-        if (currentForm) {
-          formWrapper.style.height = currentForm.scrollHeight + 'px';
-        }
-      };
-      
-      // تعديل الارتفاع عند تغيير حجم النافذة
-      window.addEventListener('resize', adjustFormHeight);
-      
-      // تعديل الارتفاع عند التبديل بين النماذج
-      const toggleLinks = document.querySelectorAll('.toggle-link');
-      toggleLinks.forEach(link => {
-        link.addEventListener('click', () => {
-          setTimeout(adjustFormHeight, 550); // بعد انتهاء الانتقال
-        });
-      });
-      // التعديل الأولي للارتفاع
-      adjustFormHeight()
-    });
-  </script>
-</body>
-</html>
+</div>
+{% endblock %}

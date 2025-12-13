@@ -1,0 +1,51 @@
+{% load static %}
+<header>
+    <nav>
+        <!-- Hamburger Menu -->
+        <div class="hamburger-menu" id="hamburgerMenu">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+
+        <!-- Logo -->
+        <a href="{% url 'main_page' %}">
+            <img src="{% static 'img/Group.svg' %}" alt="شعار الموقع" class="logo">
+        </a>
+
+        <!-- Navigation Links Container -->
+        <div class="nav-links-container" id="navLinksContainer">
+            <div class="nav-links">
+                <a href="{% url 'main_page' %}">الرئيسية</a>
+                <a href="{% url 'Storycate' %}">قصصي</a>
+                {% if user.is_authenticated %}
+                <a href="{% url 'MyLibrary' %}">مكتبتي</a>
+                <a href="{% url 'my_account' %}">الحساب</a>
+                {% endif %}
+            </div>
+
+            {% if user.is_authenticated %}
+            <a href="{% url 'logout' %}" class="login-btn">تسجيل الخروج</a>
+            {% else %}
+            <a href="{% url 'index' %}" class="login-btn">تسجيل الدخول</a>
+            {% endif %}
+
+            <div class="search-container">
+                <input type="text" class="search-bar" id="searchBar" placeholder="ابحث هنا...">
+            </div>
+        </div>
+
+        <!-- Search Icon -->
+        <div class="user-icon" id="searchIcon">
+            <img src="{% static 'img/icons8_Search 1.svg' %}" alt="بحث">
+        </div>
+
+        <!-- Theme Switch -->
+        <label class="ui-switch">
+            <input type="checkbox" id="themeSwitch">
+            <div class="slider">
+                <div class="circle"></div>
+            </div>
+        </label>
+    </nav>
+</header>

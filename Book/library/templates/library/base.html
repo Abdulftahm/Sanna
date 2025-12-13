@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{% block title %}منصة القصص العربية{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=2">
+    {% block extra_css %}{% endblock %}
+    <link rel="shortcut icon" href="{% static 'img/Group.svg' %}" type="image/x-icon">
+</head>
+<body>
+    <!-- Background Gradients -->
+    <div class="gradient-bg gradient-1"></div>
+    <div class="gradient-bg gradient-2"></div>
+
+    <!-- Header -->
+    {% include 'library/partials/header.html' %}
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    {% include 'library/partials/footer.html' %}
+
+    <!-- Common JavaScript -->
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
