@@ -8,6 +8,12 @@ DEBUG = True
 ALLOWED_HOSTS = ["*"]  # السماح لأي دومين (مهم لـ Railway)
 LOGIN_URL = '/login/'
 
+# CSRF Trusted Origins (required for Django 4.0+)
+CSRF_TRUSTED_ORIGINS = [
+    'https://sanna-2vp8.onrender.com',
+    'https://*.onrender.com',
+]
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
