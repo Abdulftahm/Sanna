@@ -3,9 +3,164 @@
 
 {% block title %}مكتبتي - منصة القصص العربية{% endblock %}
 
+{% block extra_css %}
+<style>
+    /* Hero Section */
+    .library-hero {
+        text-align: center;
+        padding: 50px 20px;
+        background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+        border-radius: 20px;
+        margin: 20px auto;
+        max-width: 1200px;
+        color: white;
+    }
+
+    .library-hero h1 {
+        font-size: 2.2rem;
+        margin-bottom: 10px;
+    }
+
+    .library-hero p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    /* Features Section */
+    .features-section {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+    }
+
+    .feature-box {
+        background: var(--card-bg);
+        border: 1px solid var(--input-border);
+        border-radius: 16px;
+        padding: 25px;
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .feature-box:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .feature-box .icon {
+        width: 60px;
+        height: 60px;
+        background: var(--gradient-start);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 15px;
+    }
+
+    .feature-box .icon svg {
+        width: 30px;
+        height: 30px;
+        fill: white;
+    }
+
+    .feature-box h3 {
+        font-size: 1.2rem;
+        color: var(--text-color);
+        margin-bottom: 10px;
+    }
+
+    .feature-box p {
+        color: var(--nav-link-color);
+        font-size: 0.95rem;
+    }
+
+    .empty-library {
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--text-color);
+        grid-column: 1 / -1;
+    }
+
+    .empty-library p {
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+    }
+
+    .explore-btn {
+        display: inline-block;
+        padding: 12px 30px;
+        background: var(--btn-gradient);
+        color: white;
+        border-radius: 50px;
+        text-decoration: none;
+        transition: opacity 0.3s ease;
+    }
+
+    .explore-btn:hover {
+        opacity: 0.9;
+    }
+
+    @media (max-width: 768px) {
+        .library-hero {
+            padding: 35px 15px;
+            margin: 15px;
+        }
+
+        .library-hero h1 {
+            font-size: 1.6rem;
+        }
+
+        .features-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
+<!-- Hero Section -->
+<section class="library-hero">
+    <h1>مكتبتي الشخصية</h1>
+    <p>جميع قصصك المفضلة في مكان واحد</p>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="features-grid">
+        <div class="feature-box">
+            <div class="icon">
+                <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+            </div>
+            <h3>قصصك المفضلة</h3>
+            <p>احفظ قصصك المفضلة وارجع إليها في أي وقت</p>
+        </div>
+        <div class="feature-box">
+            <div class="icon">
+                <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+            </div>
+            <h3>استمع في أي وقت</h3>
+            <p>استمتع بالاستماع للقصص المسموعة متى شئت</p>
+        </div>
+        <div class="feature-box">
+            <div class="icon">
+                <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+            </div>
+            <h3>تتبع تقدمك</h3>
+            <p>تابع ما قرأته واستأنف من حيث توقفت</p>
+        </div>
+    </div>
+</section>
+
+<!-- Library Books Section -->
 <section class="stories-section">
-    <h2 class="section-title">مكتبتي</h2>
+    <h2 class="section-title">قصصي المحفوظة</h2>
 
     <div class="stories-grid">
         {% for item in user_library_books %}
@@ -40,19 +195,4 @@
         {% endfor %}
     </div>
 </section>
-{% endblock %}
-
-{% block extra_css %}
-<style>
-    .empty-library {
-        text-align: center;
-        padding: 60px 20px;
-        color: var(--text-color);
-    }
-
-    .empty-library p {
-        font-size: 1.2rem;
-        margin-bottom: 20px;
-    }
-</style>
 {% endblock %}

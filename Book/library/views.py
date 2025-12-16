@@ -5,8 +5,21 @@ from django.contrib import messages
 from .models import Book, Category, UserLibrary, CustomUser, SEOSettings
 
 
+def get_user_favorites(user):
+    """Helper function to get list of favorite book IDs for a user"""
+    if user.is_authenticated:
+        return list(UserLibrary.objects.filter(
+            user=user,
+            is_favorite=True
+        ).values_list('book_id', flat=True))
+    return []
+
+
 def index(request):
     """Landing page with login/register forms"""
+    # Redirect authenticated users to main page
+    if request.user.is_authenticated:
+        return redirect('main_page')
     return render(request, 'library/index.html')
 
 
@@ -14,7 +27,12 @@ def main_page(request):
     """Main homepage - available to all visitors"""
     books = Book.objects.all()
     seo = SEOSettings.objects.filter(page_name="mainPage").first()
-    return render(request, 'library/mainPage.html', {'books': books, 'seo': seo})
+    favorite_ids = get_user_favorites(request.user)
+    return render(request, 'library/mainPage.html', {
+        'books': books,
+        'seo': seo,
+        'favorite_ids': favorite_ids
+    })
 
 
 @login_required
@@ -33,31 +51,53 @@ def my_library(request):
 def story_categories(request):
     """Display all books - available to all visitors"""
     books = Book.objects.all().order_by('-created_at')
-    return render(request, 'library/Storycate.html', {'books': books})
+    categories = Category.objects.all()
+    favorite_ids = get_user_favorites(request.user)
+    return render(request, 'library/Storycate.html', {
+        'books': books,
+        'categories': categories,
+        'favorite_ids': favorite_ids
+    })
 
 
 def description(request, book_id):
     """Book description page - available to all visitors"""
     book = get_object_or_404(Book, id=book_id)
-    return render(request, 'library/description.html', {'book': book})
+    favorite_ids = get_user_favorites(request.user)
+    is_favorite = book.id in favorite_ids
+    return render(request, 'library/description.html', {
+        'book': book,
+        'is_favorite': is_favorite
+    })
 
 
 def listen(request, book_id):
     """Audio player page - available to all visitors"""
     book = get_object_or_404(Book, id=book_id)
-    return render(request, 'library/listen.html', {'book': book})
+    favorite_ids = get_user_favorites(request.user)
+    is_favorite = book.id in favorite_ids
+    return render(request, 'library/listen.html', {
+        'book': book,
+        'is_favorite': is_favorite
+    })
 
 
 @login_required
-def add_to_favorites_and_redirect(request, book_id, action):
-    """Add book to user's library/favorites - requires login"""
+def toggle_favorite(request, book_id, action):
+    """Toggle book favorite status - requires login"""
     book = get_object_or_404(Book, id=book_id)
     user_library, created = UserLibrary.objects.get_or_create(user=request.user, book=book)
-    user_library.is_favorite = True
+
+    # Toggle favorite status
+    user_library.is_favorite = not user_library.is_favorite
     user_library.save()
 
     if action == 'listen':
         return redirect('listen', book_id=book.id)
+    elif action == 'storycate':
+        return redirect('Storycate')
+    elif action == 'main':
+        return redirect('main_page')
     return redirect('description', book_id=book.id)
 
 

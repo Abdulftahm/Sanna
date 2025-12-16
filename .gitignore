@@ -2,3 +2,4 @@
 Book/db.sqlite3
 Book/staticfiles/
 Book/media
+.env.production

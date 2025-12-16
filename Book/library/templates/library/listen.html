@@ -5,6 +5,181 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/book-detail.css' %}">
+<style>
+    /* Playlist Menu Styles */
+    .playlist-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 999;
+        display: none;
+    }
+
+    .playlist-menu {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 350px;
+        max-width: 90%;
+        max-height: 70vh;
+        background-color: var(--card-bg);
+        border: 1px solid var(--input-border);
+        border-radius: 16px;
+        padding: 20px;
+        z-index: 1000;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+        display: none;
+    }
+
+    .playlist-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid var(--input-border);
+    }
+
+    .playlist-header h3 {
+        font-size: 1.3rem;
+        margin: 0;
+        color: var(--text-color);
+    }
+
+    .close-playlist {
+        font-size: 28px;
+        cursor: pointer;
+        color: var(--nav-link-color);
+        transition: color 0.3s ease;
+        line-height: 1;
+    }
+
+    .close-playlist:hover {
+        color: var(--text-color);
+    }
+
+    .playlist-items {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    .playlist-items li {
+        padding: 15px;
+        cursor: pointer;
+        border-radius: 10px;
+        margin-bottom: 8px;
+        transition: all 0.3s ease;
+        color: var(--text-color);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .playlist-items li:hover {
+        background-color: var(--gradient-start);
+        color: white;
+    }
+
+    .playlist-items li.active {
+        background-color: var(--gradient-start);
+        color: white;
+    }
+
+    .playlist-items li .chapter-number {
+        width: 30px;
+        height: 30px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+        font-weight: bold;
+    }
+
+    /* Volume Control */
+    .volume-control {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid var(--input-border);
+    }
+
+    .volume-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--text-color);
+        padding: 5px;
+    }
+
+    .volume-btn svg {
+        width: 24px;
+        height: 24px;
+        fill: currentColor;
+    }
+
+    .volume-slider {
+        flex: 1;
+        height: 6px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 3px;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .volume-level {
+        height: 100%;
+        background: var(--gradient-start);
+        border-radius: 3px;
+        width: 100%;
+        transition: width 0.1s ease;
+    }
+
+    /* Active states for control buttons */
+    .control-btn.active {
+        color: var(--gradient-start);
+    }
+
+    .control-btn.active svg {
+        fill: var(--gradient-start);
+    }
+
+    /* Speed control */
+    .speed-control {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .speed-btn {
+        background: var(--input-bg);
+        border: 1px solid var(--input-border);
+        color: var(--text-color);
+        padding: 8px 15px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+
+    .speed-btn:hover, .speed-btn.active {
+        background: var(--gradient-start);
+        border-color: var(--gradient-start);
+        color: white;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -21,11 +196,11 @@
             <div class="book-meta-grid">
                 <div class="meta-item">
                     <span class="meta-label">مدة الاستماع:</span>
-                    <span class="meta-value">01:15:00</span>
+                    <span class="meta-value" id="totalDuration">--:--:--</span>
                 </div>
                 <div class="meta-item">
                     <span class="meta-label">عدد الصفحات:</span>
-                    <span class="meta-value">83</span>
+                    <span class="meta-value">{{ book.pages|default:"83" }}</span>
                 </div>
             </div>
             <p class="story-category">{{ book.category.name }}</p>
@@ -54,19 +229,39 @@
             </div>
         </div>
 
+        <!-- Secondary Controls (Like, Playlist, Share, Shuffle) -->
         <div class="player-controls">
-            <button class="control-btn" title="إعجاب">
+            {% if user.is_authenticated %}
+            <a href="{% url 'toggle_favorite' book.id 'listen' %}" class="control-btn {% if is_favorite %}active{% endif %}" id="likeBtn" title="{% if is_favorite %}إزالة من المفضلة{% else %}أضف للمفضلة{% endif %}">
+                <svg viewBox="0 0 24 24" {% if is_favorite %}style="fill: #4A7EEE;"{% endif %}>
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+            </a>
+            {% else %}
+            <a href="{% url 'index' %}" class="control-btn" id="likeBtn" title="سجل دخول للإضافة للمفضلة">
                 <svg viewBox="0 0 24 24">
                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                 </svg>
+            </a>
+            {% endif %}
+            <button class="control-btn" id="playlistBtn" title="قائمة التشغيل">
+                <svg viewBox="0 0 24 24">
+                    <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>
+                </svg>
             </button>
-            <button class="control-btn" title="مشاركة">
+            <button class="control-btn" id="shareBtn" title="مشاركة">
                 <svg viewBox="0 0 24 24">
                     <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
                 </svg>
             </button>
+            <button class="control-btn" id="shuffleBtn" title="تشغيل عشوائي">
+                <svg viewBox="0 0 24 24">
+                    <path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/>
+                </svg>
+            </button>
         </div>
 
+        <!-- Main Controls (Previous, Play/Pause, Next, Repeat) -->
         <div class="player-main-controls">
             <button class="control-btn" id="prevBtn" title="السابق">
                 <svg viewBox="0 0 24 24">
@@ -86,8 +281,14 @@
                     <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
                 </svg>
             </button>
+            <button class="control-btn" id="repeatBtn" title="إعادة التشغيل">
+                <svg viewBox="0 0 24 24">
+                    <path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/>
+                </svg>
+            </button>
         </div>
 
+        <!-- Progress Bar -->
         <div class="progress-container">
             <div class="progress-bar" id="progressBar">
                 <div class="progress" id="progress"></div>
@@ -97,10 +298,49 @@
                 <span id="duration">0:00</span>
             </div>
         </div>
+
+        <!-- Volume Control -->
+        <div class="volume-control">
+            <button class="volume-btn" id="volumeBtn" title="كتم الصوت">
+                <svg id="volumeIcon" viewBox="0 0 24 24">
+                    <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                </svg>
+            </button>
+            <div class="volume-slider" id="volumeSlider">
+                <div class="volume-level" id="volumeLevel"></div>
+            </div>
+        </div>
+
+        <!-- Speed Control -->
+        <div class="speed-control">
+            <span style="color: var(--nav-link-color); margin-left: 10px;">السرعة:</span>
+            <button class="speed-btn" data-speed="0.5">0.5x</button>
+            <button class="speed-btn active" data-speed="1">1x</button>
+            <button class="speed-btn" data-speed="1.5">1.5x</button>
+            <button class="speed-btn" data-speed="2">2x</button>
+        </div>
     </div>
 
     <!-- Hidden Audio Element -->
-    <audio id="audioPlayer" src="{{ book.audio_file.url }}"></audio>
+    <audio id="audioPlayer" src="{{ book.audio_file.url }}" preload="metadata"></audio>
+
+    <!-- Playlist Overlay -->
+    <div class="playlist-overlay" id="playlistOverlay"></div>
+
+    <!-- Playlist Menu -->
+    <div class="playlist-menu" id="playlistMenu">
+        <div class="playlist-header">
+            <h3>قائمة التشغيل</h3>
+            <span class="close-playlist" id="closePlaylist">&times;</span>
+        </div>
+        <ul class="playlist-items" id="playlistItems">
+            <li class="active" data-src="{{ book.audio_file.url }}">
+                <span class="chapter-number">1</span>
+                <span>{{ book.title }}</span>
+            </li>
+            <!-- Additional chapters can be added dynamically -->
+        </ul>
+    </div>
 
     <!-- Comments Section -->
     <div class="comments-section">
