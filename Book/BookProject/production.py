@@ -1,4 +1,5 @@
 import os
+import dj_database_url
 
 from BookProject.settings import *
 
@@ -11,12 +12,20 @@ DOCKER_VOL_PATH='/mnt/storage'
 STATIC_ROOT=f"{DOCKER_VOL_PATH}/static"
 STATICFILES_STORAGE="whitenoise.storage.CompressedStaticFilesStorage"
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': f"{DOCKER_VOL_PATH}/db/db.sqlite3",
+# Use PostgreSQL from DATABASE_URL environment variable
+DATABASE_URL = os.environ.get('DATABASE_URL')
+if DATABASE_URL:
+    DATABASES = {
+        'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
     }
-}
+else:
+    # Fallback to SQLite for local development without DATABASE_URL
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': f"{DOCKER_VOL_PATH}/db/db.sqlite3",
+        }
+    }
 
 LOGGING = {
     "version": 1,
