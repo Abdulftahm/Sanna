@@ -58,17 +58,14 @@ TEMPLATES = [
 WSGI_APPLICATION = 'BookProject.wsgi.application'
 
 DATABASE_URL = os.environ.get('DATABASE_URL')
-if DATABASE_URL:
-    DATABASES = {
-        'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
-    }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+if not DATABASE_URL:
+    # Show all env vars for debugging
+    env_vars = [k for k in os.environ.keys()]
+    raise Exception(f"DATABASE_URL is NOT SET! Available env vars: {env_vars}")
+
+DATABASES = {
+    'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
