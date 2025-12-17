@@ -9,7 +9,7 @@ ALLOWED_HOSTS = os.environ['ALLOWED_HOSTS'].split(',')
 CSRF_TRUSTED_ORIGINS=[f"https://{x}" for x in ALLOWED_HOSTS]
 DOCKER_VOL_PATH='/mnt/storage'
 
-STATIC_ROOT=f"{DOCKER_VOL_PATH}/static"
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE="whitenoise.storage.CompressedStaticFilesStorage"
 
 # Use PostgreSQL from DATABASE_URL environment variable
