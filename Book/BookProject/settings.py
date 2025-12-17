@@ -58,14 +58,17 @@ TEMPLATES = [
 WSGI_APPLICATION = 'BookProject.wsgi.application'
 
 DATABASE_URL = os.environ.get('DATABASE_URL')
+print(f"DEBUG: DATABASE_URL exists: {bool(DATABASE_URL)}")
+print(f"DEBUG: DATABASE_URL value: {DATABASE_URL[:20] if DATABASE_URL else 'NONE'}...")
+
 if not DATABASE_URL:
-    # Show all env vars for debugging
     env_vars = [k for k in os.environ.keys()]
     raise Exception(f"DATABASE_URL is NOT SET! Available env vars: {env_vars}")
 
 DATABASES = {
     'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
 }
+print(f"DEBUG: DATABASES ENGINE: {DATABASES['default'].get('ENGINE')}")
 
 AUTH_PASSWORD_VALIDATORS = [
     {
